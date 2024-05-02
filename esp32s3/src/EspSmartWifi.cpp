@@ -66,7 +66,7 @@ bool EspSmartWifi::SaveConfig()
 void EspSmartWifi::SmartConfig()
 {
   Serial_debug.println("Use smart config to connect wifi.");
-  display_.fillScreen(BLACK);
+  display_.fillScreen(0);
   display_.setCursor(0, 0);
   display_.print("Wifi SmartConfig");
   WiFi.mode(WIFI_STA);
@@ -133,7 +133,7 @@ void EspSmartWifi::BaseConfig()
 {
   Serial_debug.println("Use base config to connect wifi.");
   led_.flash(4, 125, 125, 0, 0);
-  display_.fillScreen(BLACK);
+  display_.fillScreen(0);
   display_.setCursor(0, 0);
   display_.print("Connecting ");
   display_.print(_config.SSID);
@@ -184,8 +184,8 @@ void EspSmartWifi::initFS()
 
 void EspSmartWifi::DisplayIP()
 {
-  display_.fillScreen(BLACK);
-  display_.setTextColor(WHITE);
+  display_.fillScreen(0);
+  display_.setTextColor(0xFFFF);
   display_.setTextSize(1); // Draw 2X-scale text
   display_.setCursor(2, 2);
   display_.println("IP: ");
