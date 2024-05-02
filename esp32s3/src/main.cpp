@@ -35,16 +35,25 @@ EspSmartWifi wifi(display.getTFT(), led);
 
 void setup() {
   Serial.begin(9600);
-
+  display.begin();
 
   display.getTFT().setTextColor(0xFFFF);
   display.getTFT().setCursor(0, 0);
-  display.getTFT().print("V-Detection Starting...");
+  display.getTFT().print("ESPVideo Starting...");
 
   wifi.initFS();
   wifi.ConnectWifi(); //This may loop forever if wifi is not connected
   
   wifi.DisplayIP();
+
+  videoSource = new NetworkVideoSource(wifi.getConfig().Server.c_str(), 1833);
+  videoPlayer = new VideoPlayer(
+    videoSource,
+    display
+  );
+  videoPlayer->start();
+  videoPlayer->play();
+
 }
 
 
@@ -55,11 +64,5 @@ void loop() {
     delay(500);
     Serial.print(".");
   }
-  videoSource = new NetworkVideoSource("192.168.8.3", 1833);
-  videoPlayer = new VideoPlayer(
-    videoSource,
-    display
-  );
-  videoPlayer->start();
-  videoPlayer->play();
+  delay(200);
 }

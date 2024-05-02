@@ -13,6 +13,11 @@ TFT::TFT(): tft(new TFT_eSPI()) {
   }
   #endif
 
+  
+}
+
+void TFT::begin()
+{
   tft->init();
   #ifdef M5CORE2
   tft->setRotation(6);
