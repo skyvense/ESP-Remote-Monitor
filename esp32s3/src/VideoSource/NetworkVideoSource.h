@@ -1,9 +1,12 @@
 #pragma once
 
 #include "VideoSource.h"
-
+class WiFiClient;
+class PubSubClient;
 class NetworkVideoSource: public VideoSource {
   private:
+    WiFiClient espClient;
+    PubSubClient mqtt;
     String mMqttServer;
     unsigned short mPort;
 

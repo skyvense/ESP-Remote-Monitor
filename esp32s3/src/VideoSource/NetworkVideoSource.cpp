@@ -1,13 +1,13 @@
 #include <Arduino.h>
 #include <WiFi.h>
-
-#include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 
 #include "NetworkVideoSource.h"
 
 const char *MQTT_DATA_SUBJECT = "/espvideo/data";
+const char *MQTT_DATA_FEEDBACK = "/espvideo/echo";
+
 
 NetworkVideoSource *networkVideoSource_this = NULL;
 
@@ -23,7 +23,7 @@ void callback(char* topic, byte* payload, unsigned int length)
     //Serial.print(message.c_str());
     if (networkVideoSource_this)
       networkVideoSource_this->OnMqttData(payload, length);
-    Serial.printf("mqtt got %d bytes\n", length);
+    //Serial.printf("mqtt got %d bytes\n", length);
   }
 }
 
@@ -49,7 +49,12 @@ void NetworkVideoSource::OnMqttData(byte* payload, unsigned int length)
   }
   // unlock the image buffer
   xSemaphoreGive(mCurrentFrameMutex);
+
   Serial.printf("Read %d bytes in %d ms\n", jpegLength, millis());
+
+  char sz[32];
+  sprintf(sz, "%d", millis());
+  mqtt.publish(MQTT_DATA_FEEDBACK, sz);
 }
 
 void NetworkVideoSource::_frameDownloaderTask(void *param)
@@ -60,8 +65,6 @@ void NetworkVideoSource::_frameDownloaderTask(void *param)
 
 void NetworkVideoSource::frameDownloaderTask()
 {
-  WiFiClient espClient;
-  PubSubClient mqtt(espClient);
   // 设置MQTT服务器和回调函数
   Serial.printf("Connecting to MQTT server: %s:%d\n", mMqttServer.c_str(), mPort);
   mqtt.setServer(mMqttServer.c_str(), mPort);
@@ -107,7 +110,7 @@ void NetworkVideoSource::frameDownloaderTask()
 
 
 NetworkVideoSource::NetworkVideoSource(const char *mqttServer, unsigned short port):
-mMqttServer(mqttServer), mPort(port)
+mMqttServer(mqttServer), mPort(port), mqtt(espClient)
 {
 }
 
