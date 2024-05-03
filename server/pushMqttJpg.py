@@ -54,6 +54,7 @@ def subscribe(client: mqtt_client):
     client.on_message = on_message
 
 
+
 if __name__ == "__main__":   
 
     print(f"Connecting with mqtt: {broker}, topic: {topic}")
@@ -62,9 +63,13 @@ if __name__ == "__main__":
 
     
 
-    while True:
+    for i in range(1, int(100000)):
         # Opening the binary file in binary mode as rb(read binary)
-        f = open("test.jpg", mode="rb")
+        filename = "/Users/nate/Desktop/jpg/"
+        k = str(i)
+        zfillk = k.zfill(4)
+        filename = filename + zfillk + ".jpg"
+        f = open(filename, mode="rb")
 
         # Reading file data with read() method
         data = f.read()
