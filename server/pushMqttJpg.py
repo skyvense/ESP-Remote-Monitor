@@ -17,9 +17,7 @@ import queue
 
 broker = '192.168.8.3'
 port = 1883
-topic = "espaudio/data"
-msg_sendback_topic = "espaudio/text"
-msg_screen_bitmap_topic = "espaudio/text_bitmap"
+topic = "/espvideo/data"
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
 response_text = '-'
@@ -43,45 +41,42 @@ def connect_mqtt():
     return client
 
 def on_message(client, userdata, msg):
-    if msg.topic == msg_sendback_topic:
+    if msg.topic == "":
         print(f"received msg: {msg.payload}")
-    elif msg.topic == msg_screen_bitmap_topic:
+    elif msg.topic == "/espvideo/data":
         print(f"received msg_screen_bitmap_topic, len {len(msg.payload)}")
     pass
     
     #print(f"Received bytes: `{len(msg.payload)}` from `{msg.topic}` topic")
 
 def subscribe(client: mqtt_client):
-    client.subscribe(msg_sendback_topic)
-    client.subscribe(msg_screen_bitmap_topic)
+    client.subscribe(topic)
     client.on_message = on_message
 
 
 if __name__ == "__main__":   
-    chunk = 640  # Record in chunks of 640 samples
-    sample_format = pyaudio.paInt16  # 16 bits per sample
-    channels = 1
-    fs = 8000  # Record at 16000 samples per second
-    seconds = 30000
-
-    p = pyaudio.PyAudio()  # Create an interface to PortAudio
-
-    print('Recording')
-
-    stream = p.open(format=sample_format,
-                    channels=channels,
-                    rate=fs,
-                    frames_per_buffer=chunk,
-                    input=True)
-
-    frames = []  # Initialize array to store frames
 
     print(f"Connecting with mqtt: {broker}, topic: {topic}")
     client = connect_mqtt()
     client.loop_start()
 
-    # Store data in chunks for 3 seconds
-    for i in range(0, int(fs / chunk * seconds)):
-        data = stream.read(chunk)
-        frames.append(data)
+    
+
+    while True:
+        # Opening the binary file in binary mode as rb(read binary)
+        f = open("test.jpg", mode="rb")
+
+        # Reading file data with read() method
+        data = f.read()
         client.publish(topic, data)
+        # Knowing the Type of our data
+        print(type(data))
+
+        # Printing our byte sequenced data 
+        #print(data)
+
+        # Closing the opened file
+        f.close()
+        time.sleep(0.01)
+        
+        

@@ -46,7 +46,7 @@ void setup() {
   
   wifi.DisplayIP();
 
-  videoSource = new NetworkVideoSource(wifi.getConfig().Server.c_str(), 1833);
+  videoSource = new NetworkVideoSource(wifi.getConfig().Server.c_str(), 1883);
   videoPlayer = new VideoPlayer(
     videoSource,
     display

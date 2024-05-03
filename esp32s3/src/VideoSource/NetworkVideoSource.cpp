@@ -23,6 +23,7 @@ void callback(char* topic, byte* payload, unsigned int length)
     //Serial.print(message.c_str());
     if (networkVideoSource_this)
       networkVideoSource_this->OnMqttData(payload, length);
+    Serial.printf("mqtt got %d bytes\n", length);
   }
 }
 
@@ -48,7 +49,7 @@ void NetworkVideoSource::OnMqttData(byte* payload, unsigned int length)
   }
   // unlock the image buffer
   xSemaphoreGive(mCurrentFrameMutex);
-  // Serial.printf("Read %d bytes in %d ms\n", download_image_length, millis() - start_download_time);
+  Serial.printf("Read %d bytes in %d ms\n", jpegLength, millis());
 }
 
 void NetworkVideoSource::_frameDownloaderTask(void *param)
@@ -62,40 +63,45 @@ void NetworkVideoSource::frameDownloaderTask()
   WiFiClient espClient;
   PubSubClient mqtt(espClient);
   // 设置MQTT服务器和回调函数
+  Serial.printf("Connecting to MQTT server: %s:%d\n", mMqttServer.c_str(), mPort);
   mqtt.setServer(mMqttServer.c_str(), mPort);
-  mqtt.setBufferSize(2048);
+  mqtt.setBufferSize(65535);
   mqtt.setCallback(callback);
 
   // ESP 芯片ID
   String chipId = String(ESP.getChipModel(), HEX);
   String ClientId = "EspVideo" + chipId;
-  // 如果WiFi和MQTT都连接成功
-  if (WiFi.status() == WL_CONNECTED && mqtt.connected()) 
+  while (true)
   {
-    // 定期处理MQTT消息
-    mqtt.loop();
-  } 
-  else 
-  {
-    // 如果WiFi或MQTT连接断开，尝试重新连接
-    if (!mqtt.connected()) 
+    // 如果WiFi和MQTT都连接成功
+    if (WiFi.status() == WL_CONNECTED && mqtt.connected()) 
     {
-      // 尝试连接到MQTT服务器
-      if (mqtt.connect(ClientId.c_str())) 
+      // 定期处理MQTT消息
+      mqtt.loop();
+    } 
+    else 
+    {
+      // 如果WiFi或MQTT连接断开，尝试重新连接
+      if (!mqtt.connected()) 
       {
-        Serial.println("Connected to MQTT server!");
-        // 订阅MQTT主题
-        mqtt.subscribe(MQTT_DATA_SUBJECT);
-      } 
-      else 
-      {
-        Serial.print("Failed to connect to MQTT server, rc=");
-        Serial.println(mqtt.state());
+        // 尝试连接到MQTT服务器
+        if (mqtt.connect(ClientId.c_str())) 
+        {
+          Serial.println("Connected to MQTT server!");
+          // 订阅MQTT主题
+          mqtt.subscribe(MQTT_DATA_SUBJECT);
+        } 
+        else 
+        {
+          Serial.print("Failed to connect to MQTT server, rc=");
+          Serial.println(mqtt.state());
+          delay(100);
+          //return;
+        }
         delay(100);
-        //return;
       }
-      delay(100);
     }
+    delay(10);
   }
 }
 
