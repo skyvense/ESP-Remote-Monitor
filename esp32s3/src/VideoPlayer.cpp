@@ -162,6 +162,7 @@ void VideoPlayer::framePlayerTask()
       mJpeg.decode(0, 0, 0);
       mJpeg.close();
     }
+    /*
     // show channel indicator 
     if (millis() - mChannelVisible < 2000) {
       mDisplay.drawChannel(888);
@@ -169,6 +170,7 @@ void VideoPlayer::framePlayerTask()
     #if CORE_DEBUG_LEVEL > 0
     mDisplay.drawFPS(frameTimes.size() / 5);
     #endif
+    */
     mDisplay.endWrite();
   }
 }

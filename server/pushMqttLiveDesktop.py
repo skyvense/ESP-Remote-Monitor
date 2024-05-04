@@ -8,7 +8,8 @@ import time
 from paho.mqtt import client as mqtt_client
 from datetime import datetime
 from time import mktime
-
+from PIL import ImageGrab
+from io import BytesIO  
 
 broker = '192.168.8.3'
 port = 1883
@@ -51,25 +52,21 @@ def subscribe(client: mqtt_client):
     client.on_message = on_message
 
 def send_frame():
-    filename = "/Users/nate/Desktop/jpg/"
-    global index
-    k = str(index)
-    zfillk = k.zfill(4)
-    filename = filename + zfillk + ".jpg"
-    f = open(filename, mode="rb")
+    #do the grab
+    ss_region = (100, 300, 340, 435)
+    ss_img = ImageGrab.grab(ss_region)
 
-    # Reading file data with read() method
-    data = f.read()
+    #JPG does not support transparency - RGBA means Red, Green, Blue, Alpha - Alpha is transparency.
+    ss_img = ss_img.convert('RGB'); 
+    mem_file = BytesIO()
+    ss_img.save(mem_file, 'jpeg', quality=75)
+    data = mem_file.getvalue()
+
     client.publish(topic, data)
     # Knowing the Type of our data
-    print(type(data))
+    #print(type(data))
 
-    # Printing our byte sequenced data 
-    #print(data)
 
-    # Closing the opened file
-    f.close()
-    index = index + 1
 
 if __name__ == "__main__":   
 
@@ -79,7 +76,7 @@ if __name__ == "__main__":
     index = 1
     
 
-    for i in range(1, int(100000)):
+    while True:
         send_frame()
         time.sleep(10)
         
