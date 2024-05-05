@@ -109,7 +109,7 @@ void EspSmartWifi::SmartConfig()
 //Connect wifi
 void EspSmartWifi::ConnectWifi()
 {
-  SaveConfig();
+  //SaveConfig();
   if (LoadConfig())
   {
     BaseConfig();
