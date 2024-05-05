@@ -22,9 +22,9 @@ And this code runs about 5-10 fps, which is fast enough for our inital purpose.
 2. pip install -r server/requiements.txt
 3. python server/pushMqttLiveDesktop.py
 4. the python code then captures screen area:
-   [code]
+   ```python
    ss_region = (100, 300, 340, 435)
-   [/code] 
+   ```
 ## Running    
 
 1. My ESP32 screen shot
