@@ -1,6 +1,8 @@
 # Esp32 Remote Screen Streamer
 This is A very simple &amp; fast ESP32 Screen streaming solution, coding by PlatformIO/Arduino
+
 The program running on an ESP32-S3 board allows you to remote monitoring a small area from your desktop.
+
 Screen data is shared by mqtt protocol between desktop server(python code) and ESP32-S3 device
 
 The main reason I decided to start this project is to provide a flexible way of dashboards:
