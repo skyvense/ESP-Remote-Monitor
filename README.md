@@ -6,7 +6,8 @@ The program running on an ESP32-S3 board allows you to remote monitoring a small
 Screen data is shared by mqtt protocol between desktop server(python code) and ESP32-S3 device
 
 The main reason I decided to start this project is to provide a flexible way of dashboards:
-Which I got desperate after searched the internet for several days: There is no good graphic dashboard running on this small devices, and it's also difficult to draw those fonts and lines beautifully.
+Which I got desperate after searched the internet for several days: There is no good graphic dashboard running on this small device, and it's also difficult to draw those fonts and lines beautifully.
+
 But our computer is good at this, and there are thousands of ways to provide such function or interface, after I built the project, I can display everything on that small screen, without changing the code inside it.
 
 And this code runs about 5-10 fps, which is fast enough for our inital purpose.
