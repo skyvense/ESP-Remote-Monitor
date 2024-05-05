@@ -73,10 +73,9 @@ if __name__ == "__main__":
     print(f"Connecting with mqtt: {broker}, topic: {topic}")
     client = connect_mqtt()
     client.loop_start()
-    index = 1
-    
 
     while True:
+        #send one frame every 10 seconds for a start 
         send_frame()
         time.sleep(10)
         
