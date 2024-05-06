@@ -37,7 +37,7 @@ And this code runs about 5-10 fps, which is fast enough for our inital purpose.
 ![Screen capture](/doc/231714918416_.pic.jpg)
 
 3. Let see the framerate:
-![Movie](/pic/25_1714918450.mp4)
+[![Watch the video](https://img.youtube.com/vi/_adBbM8UVR4/maxresdefault.jpg)](https://youtu.be/_adBbM8UVR4)
 
 ## What's next
 The project is still in it's early stage, A proper C/C++ Desktop Application is need to select display area
