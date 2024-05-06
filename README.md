@@ -41,3 +41,11 @@ And this code runs about 5-10 fps, which is fast enough for our inital purpose.
 
 ## What's next
 The project is still in it's early stage, A proper C/C++ Desktop Application is need to select display area
+
+## Thanks to
+Mutithread Videoplayer codes are from:
+
+https://github.com/atomic14/esp32-tv
+
+But I removed Audio decode & play codes
+
