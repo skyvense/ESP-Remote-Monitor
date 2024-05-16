@@ -4,6 +4,14 @@
 #include "pin_config.h"
 #include "TFT.h"
 
+#define GFX_DEV_DEVICE LILYGO_T_DISPLAY_S3
+#define GFX_EXTRA_PRE_INIT()              \
+    {                                     \
+        pinMode(15 /* PWD */, OUTPUT);    \
+        digitalWrite(15 /* PWD */, HIGH); \
+    }
+#define GFX_BL 38
+
 TFT::TFT() {
   // power on the tft
   #ifdef TFT_POWER
@@ -13,25 +21,29 @@ TFT::TFT() {
     digitalWrite(TFT_POWER, TFT_POWER_ON);
   }
   #endif
-  bus = new Arduino_ESP32LCD8(7 /* DC */, 6 /* CS */, 8 /* WR */, 9 /* RD */, 39 /* D0 */, 40 /* D1 */, 41 /* D2 */, 42 /* D3 */,
-        45 /* D4 */, 46 /* D5 */, 47 /* D6 */, 48 /* D7 */);
-  tft = new Arduino_ST7789(bus, 5 /* RST */, 0 /* rotation */, true /* IPS */, 170 /* width */, 320 /* height */, 35 /* col offset 1 */,
-                                      0 /* row offset 1 */, 35 /* col offset 2 */, 0 /* row offset 2 */);
+  bus = new Arduino_ESP32PAR8Q(
+      7 /* DC */, 6 /* CS */, 8 /* WR */, 9 /* RD */,
+      39 /* D0 */, 40 /* D1 */, 41 /* D2 */, 42 /* D3 */, 45 /* D4 */, 46 /* D5 */, 47 /* D6 */, 48 /* D7 */);
+  tft = new Arduino_ST7789(bus, 5 /* RST */, 0 /* rotation */, true /* IPS */, 170 /* width */, 320 /* height */, 35 /* col offset 1 */, 0 /* row offset 1 */, 35 /* col offset 2 */, 0 /* row offset 2 */);
+
+
   
 }
 
 void TFT::begin()
 {
-  pinMode(PIN_POWER_ON, OUTPUT);
-  digitalWrite(PIN_POWER_ON, HIGH);
-  ledcSetup(0, 2000, 8);
-  ledcAttachPin(PIN_LCD_BL, 0);
-  ledcWrite(0, 255); /* Screen brightness can be modified by adjusting this parameter. (0-255) */
+  GFX_EXTRA_PRE_INIT();
+
+#ifdef GFX_BL
+  pinMode(GFX_BL, OUTPUT);
+  digitalWrite(GFX_BL, HIGH);
+#endif
+
   tft->begin();
   #ifdef M5CORE2
   tft->setRotation(6);
   #else
-  tft->setRotation(1);
+  tft->setRotation(3);
   #endif
   tft->fillScreen(BLACK);
   #ifdef USE_DMA

@@ -4,8 +4,8 @@
 #include <FS.h>
 
 struct Config {
-  String SSID = "S1";
-  String Passwd = "checkin888";
+  String SSID = "SkyWifi2";
+  String Passwd = "checkinooxx";
   String Server = "192.168.8.3";
   String Token = "0000";
 };
